@@ -73,7 +73,6 @@ export class HomeService {
       });
     }
 
-    console.log(navigator.mediaDevices.getUserMedia(this.videoConstraints), 'getUserMedia result');
     return navigator.mediaDevices.getUserMedia({video: true, audio: false})
       .then(stream => this.localStream = stream)
       .catch(err => console.log('MyError',err));
@@ -183,21 +182,21 @@ export class HomeService {
 
     this.pc.onicecandidate = (event) => this.handleICE(event);
 
-    if(this.platform.is('ios')){
-      console.log('Trying to install ontrack handler');
-      (<any>window).ontrack = (<any> this).pc.ontrack = (event) => {
-        console.log("ontrack called");
-        this.remoteStream = event.streams[0];
-        this.remoteStreamSubject.next(this.remoteStream);
-      }
-    }
-    else{
+    // if(this.platform.is('ios')){
+    //   console.log('Trying to install ontrack handler');
+    //   (<any>window).ontrack = (<any> this).pc.ontrack = (event) => {
+    //     console.log("ontrack called");
+    //     this.remoteStream = event.streams[0];
+    //     this.remoteStreamSubject.next(this.remoteStream);
+    //   }
+    // }
+    // else{
       console.log('Trying to install onaddstream handler');
       this.pc.onaddstream = (event) => {
         console.log('onaddstream called: ', event);
         this.handleRemoteAddStream(event);
       }
-    }
+    // }
 
 
     this.isStarted = true;

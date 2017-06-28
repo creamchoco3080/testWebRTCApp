@@ -14,10 +14,10 @@
   <ion-grid>
     <ion-row>
       <ion-col col-6>
-        <video autoplay width="100%" height="100%" [srcObject]="localMediaStream"></video>
+        <video autoplay width="100%" height="100%" [src]="objUrl" [srcObject]="localMediaStream"></video>
       </ion-col>
       <ion-col col-6>
-        <video autoplay width="100%" height="100%" [srcObject]="remoteMediaStream"></video>
+        <video autoplay width="100%" height="100%" [src]="remoteObjUrl" [srcObject]="remoteMediaStream"></video>
       </ion-col>
     </ion-row>
     <ion-row>

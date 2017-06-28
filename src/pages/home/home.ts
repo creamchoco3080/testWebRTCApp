@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HomeService } from './home.service';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { Platform } from 'ionic-angular';
+import { MediaPlugin, MediaObject } from '@ionic-native/media';
+import { DomSanitizer } from '@angular/platform-browser';
 
 declare var cordova: any;
 
@@ -13,6 +15,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   localMediaStream: MediaStream;
   remoteMediaStream: MediaStream;
+  objUrl;
+  remoteObjUrl;
 
   iosPlatform: boolean;
 
@@ -20,7 +24,14 @@ export class HomePage implements OnInit, OnDestroy {
 
   chat: string[];
 
-  constructor(private homeService: HomeService, private diagnostic: Diagnostic, private platform: Platform) {
+  constructor(
+    private homeService: HomeService,
+    private diagnostic: Diagnostic,
+    private platform: Platform,
+    private media: MediaPlugin,
+    private sanitizer: DomSanitizer,
+  )
+  {
     this.iosPlatform = this.platform.is('ios')
     this.chat = [];
     this.homeService.getMessage();
@@ -38,6 +49,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
     this.homeService.remoteStreamObservable.subscribe(rms => {
       console.log('rms: ', rms);
+      this.remoteObjUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(rms));
       this.remoteMediaStream = rms
     },(err)=>console.log("error:",err));
     this.homeService.receiveChannelText.subscribe(msg => {
@@ -59,7 +71,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('ngOnInit called');
-    this.platform.ready().then(()=>{
+    this.platform.ready()
+      .then(()=>{
       // If the app is running as a mobile app
       if(this.platform.is('cordova')){
         // If the platform is iOS, don't get the camera. TODO: remove this when testing on a real device
@@ -78,6 +91,9 @@ export class HomePage implements OnInit, OnDestroy {
             }
             else{
               this.homeService.startVideo().then((stream)=>{
+                this.objUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(stream));
+                // stream['__proto__'].constructor = cordova.plugins.iosrtc.MediaStream;
+
                 (<any> window).localMediaStream = this.localMediaStream = stream;
                 this.homeService.createPC();
                 this.homeService.checkCondition();

@@ -8,6 +8,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { HomeService } from '../pages/home/home.service';
 import {Diagnostic} from "@ionic-native/diagnostic";
+import {MediaPlugin} from "@ionic-native/media";
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import {Diagnostic} from "@ionic-native/diagnostic";
     StatusBar,
     SplashScreen,
     HomeService,
+    MediaPlugin,
     Diagnostic,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
