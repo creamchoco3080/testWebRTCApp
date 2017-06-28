@@ -11,4 +11,25 @@
   <p>
     If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
   </p>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6>
+        <video autoplay width="100%" height="100%" [srcObject]="localMediaStream"></video>
+      </ion-col>
+      <ion-col col-6>
+        <video autoplay width="100%" height="100%" [srcObject]="remoteMediaStream"></video>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12>
+        <ion-list>
+          <p ion-item *ngFor="let line of chat">
+            {{line}}
+          </p>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-input type="text" [(ngModel)]="sendDataText"></ion-input>
+  <button ion-button (click)="sendData()">Send</button>
 </ion-content>

@@ -1,0 +1,83 @@
+*getUserMedia Error: TrackStartError(Chrome 58+ for Android?)
+Add crosswalk to Ionic project
+
+*Error: Ionic run android - com.android.support conflicting v26-alpha1 and v25.3.1
+add this line to build.gradle
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '25.3.1' // use version used
+            }
+        }
+    }
+}
+
+*using cordova plugin
+declare var cordova: any;
+
+*Error: cordova is not defined
+if(typeof cordova !== 'undefined'){
+  //wrap cordova method inside
+}
+
+*add permissions
+Add these lines to AndroidManifest.xml
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+Add these lines for asking runtime external storage permissions
+cordova.plugins.diagnostic.requestExternalStorageAuthorization(function(status){
+    console.log("Authorization request for external storage use was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
+}, function(error){
+    console.error(error);
+});
+
+Add these lines for asking runtime camera permissions
+cordova.plugins.diagnostic.getPermissionAuthorizationStatus(function(status){
+  switch(status){
+    case cordova.plugins.diagnostic.runtimePermissionStatus.GRANTED:
+      console.log("Permission granted to use the camera");
+      break;
+    case cordova.plugins.diagnostic.runtimePermissionStatus.NOT_REQUESTED:
+      console.log("Permission to use the camera has not been requested yet");
+      break;
+    case cordova.plugins.diagnostic.runtimePermissionStatus.DENIED:
+      console.log("Permission denied to use the camera - ask again?");
+      break;
+    case cordova.plugins.diagnostic.runtimePermissionStatus.DENIED_ALWAYS:
+      console.log("Permission permanently denied to use the camera - guess we won't be using it then!");
+      break;
+  }
+}, function(error){
+  console.error("The following error occurred: "+error);
+}, cordova.plugins.diagnostic.runtimePermission.CAMERA);
+cordova.plugins.diagnostic.requestRuntimePermission(function(status){
+  switch(status){
+    case cordova.plugins.diagnostic.runtimePermissionStatus.GRANTED:
+      console.log("Permission granted to use the camera");
+      break;
+    case cordova.plugins.diagnostic.runtimePermissionStatus.NOT_REQUESTED:
+      console.log("Permission to use the camera has not been requested yet");
+      break;
+    case cordova.plugins.diagnostic.runtimePermissionStatus.DENIED:
+      console.log("Permission denied to use the camera - ask again?");
+      break;
+    case cordova.plugins.diagnostic.runtimePermissionStatus.DENIED_ALWAYS:
+      console.log("Permission permanently denied to use the camera - guess we won't be using it then!");
+      break;
+  }
+}, function(error){
+  console.error("The following error occurred: "+error);
+}, cordova.plugins.diagnostic.runtimePermission.CAMERA);
+
+If asking permissions do not work, go to app settings and manually give permissions
+
+Or use native plugin
+Install diagnostic cordova plugin and ionic native package
+cordova plugin add cordova.plugins.diagnostic
+npm install --save @ionic-native/diagnostic
+
+import { Diagnostic } from '@ionic-native/diagnostic';
